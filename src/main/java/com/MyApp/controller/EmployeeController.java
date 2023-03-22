@@ -1,12 +1,9 @@
 package com.MyApp.controller;
 
-import java.security.Principal;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,70 +15,65 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.MyApp.dto.EmployeeDto;
+import com.MyApp.dto.RoleDto;
 import com.MyApp.model.Employee;
+import com.MyApp.model.Role;
 import com.MyApp.service.EmployeeService;
 
 //@CrossOrigin(origins = "https://myapp-angular-heroku.herokuapp.com/") 
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200/")
-@RequestMapping("/api/V1/")
+@RequestMapping("/api/V1")
 public class EmployeeController {
-	
-	// ---------- test auth --------------
-	
-	@RequestMapping("/login")
-    public boolean login(@RequestBody Employee employee) {
-        return employee.getEmail().equals("user") && employee.getPassword().equals("password");
-    }
-	
-	@RequestMapping("/employee")
-    public Principal user(HttpServletRequest request) {
-        String authToken = request.getHeader("Authorization")
-          .substring("Basic".length()).trim();
-        return () ->  new String(Base64.getDecoder()
-          .decode(authToken)).split(":")[0];
-    }
-	
-	//--------------------------------------
-	
+
+	@Autowired
+	private ModelMapper modelMapper;
+
 	@Autowired
 	private EmployeeService employeeService;
-	
-	//Permet de retrouver tout les employées
+
+	// Permet de retrouver tout les employées
 	@GetMapping("/employees")
 	public List<Employee> getAllEmployees() {
-		List<Employee> e = employeeService.getAllEmployees();
-		for (Employee emp: e) {
-			System.err.println(" employee : " + emp.getEmail());
-		}
-		
 		return employeeService.getAllEmployees();
 	}
-	
-	//Permet d'ajouter un employé
-	@PostMapping("/employees")
-	public Employee addEmployee(@RequestBody Employee employee) {
+
+	// Permet d'ajouter un employé
+	@PostMapping("/employee")
+	public Employee addEmployee(@RequestBody EmployeeDto employeeDto) {
+		Employee employee = modelMapper.map(employeeDto, Employee.class);
 		return employeeService.addEmployee(employee);
 	}
-	
-	//Permet de retrouver un employee selon son identifiant
-	@GetMapping("/employees/{id}")
+
+	// Permet d'ajouter un role à un employee
+	@PostMapping("/employee/{id}/role")
+	public Employee addRoleToEmployee(@PathVariable Long id, @RequestBody RoleDto roleDto) {
+		Employee employee = employeeService.getEmployeeById(id);
+		Role role = modelMapper.map(roleDto, Role.class);
+		return employeeService.addRoleToEmployee(role, employee.getId());
+	}
+
+	// Permet de retrouver un employee selon son identifiant
+	@GetMapping("/employee/{id}")
 	public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
 		Employee employee = employeeService.getEmployeeById(id);
 		return ResponseEntity.ok(employee);
 	}
-	
-	//Permet de mettre à jour un employé
-	@PutMapping("/employees/{id}")
-	public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails) {
-		Employee UpdatedEmployee = employeeService.update(id, employeeDetails);
-		return ResponseEntity.ok(UpdatedEmployee);
+
+	// Permet de mettre à jour un employé
+	@PutMapping("/employee/{id}")
+	public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDto employeeDetailsDto) {
+		Employee employee = modelMapper.map(employeeDetailsDto, Employee.class);
+		Employee updatedEmployee = employeeService.update(id, employee);
+		return ResponseEntity.ok(updatedEmployee);
 	}
-	
-	//Permet de supprimer un employé
-	@DeleteMapping("/employees/{id}")
-	public ResponseEntity<Map<String, Boolean>> deleteEmployee(@PathVariable Long id) {	
+
+	// Permet de supprimer un employé
+	@DeleteMapping("/employee/{id}")
+	public ResponseEntity<Map<String, Boolean>> deleteEmployee(@PathVariable Long id) {
 		Map<String, Boolean> response = employeeService.deleteEmployee(id);
 		return ResponseEntity.ok(response);
 	}

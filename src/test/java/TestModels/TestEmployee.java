@@ -1,20 +1,19 @@
 package TestModels;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import com.StageProject.MyApp.*;
-import com.StageProject.MyApp.model.Car;
-import com.StageProject.MyApp.model.Employee;
-import com.StageProject.MyApp.service.CarService;
-import com.StageProject.MyApp.service.EmployeeService;
+import com.MyApp.MyAppApplication;
+import com.MyApp.model.Car;
+import com.MyApp.model.Employee;
+import com.MyApp.service.CarService;
+import com.MyApp.service.EmployeeService;
 
 @SpringBootTest
 @ContextConfiguration(classes = MyAppApplication.class)
-public class TestEmployee {
+class TestEmployee {
 	
 	@Autowired
 	private EmployeeService employeeService;
@@ -23,7 +22,7 @@ public class TestEmployee {
 	private CarService carService;
 	
 	@Test
-	public void addEmployee() {
+	void addEmployee() {
 		Employee employee = new Employee();
 	    employee.setFirstName("julien");
 	    
@@ -33,7 +32,7 @@ public class TestEmployee {
 	}
 	
 	@Test
-	public void updateEmployee() {
+	void updateEmployee() {
 		Employee employeeUpdate = new Employee();
 		employeeUpdate.setFirstName("julien2");
 	    
@@ -48,7 +47,7 @@ public class TestEmployee {
 	}
 	
 	@Test
-	public void deleteEmployee() {
+	void deleteEmployee() {
 		Employee employee = new Employee();
 		employee.setFirstName("julien3");
 	    
@@ -56,7 +55,7 @@ public class TestEmployee {
 	 
 	    Car car = new Car();
 	    car.setIntitule("volvo");
-	    carService.addCar(car, employee.getId());
+	    carService.addCarToEmployee(car, employee.getId());
 	    
 	    Car c2 = carService.getCarById(car.getId());
 	    assertEquals(car.getId(), c2.getId());

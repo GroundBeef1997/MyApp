@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.MyApp.dto.CarDto;
 import com.MyApp.model.Car;
-import com.MyApp.model.Employee;
 import com.MyApp.service.CarService;
+import org.modelmapper.ModelMapper;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -25,10 +27,13 @@ public class CarController {
 	@Autowired
 	private CarService carService;
 	
-	//permet d'obtenir toutes les voiture d'un employee.
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	//permet d'obtenir toutes les voitures d'un employee.
 	@GetMapping("employee/{id}/car")
 	public List<Car> getAllCars(@PathVariable(value = "id") Long id) {
-		return carService.getAllCar(id);
+		return carService.getAllCarFromEmployee(id);
 	}
 	
 	/*//Permet de mettre à jour une voiture.
@@ -49,14 +54,16 @@ public class CarController {
 		
 	//Permet d'ajouter une voiture à un employee.
 	@PostMapping("employee/{id}/car")
-	public Car addCar(@PathVariable(value = "id") Long id, @RequestBody Car car) {
-		return carService.addCar(car,id);
+	public Car addCar(@PathVariable(value = "id") Long id, @RequestBody CarDto carDto) {
+		Car car = modelMapper.map(carDto, Car.class);
+		return carService.addCarToEmployee(car,id);
 	}
 		
 	//Permet de mettre à jour une voiture.
-	@PutMapping("employee/{id}")
-	public ResponseEntity<Car> updateCar(@PathVariable Long id, @RequestBody Car carDetails) {
-		Car updatedCar = carService.updateCar(id,carDetails);
+	@PutMapping("car/{id}")
+	public ResponseEntity<Car> updateCar(@PathVariable Long id, @RequestBody CarDto carDetailsDto) {
+		Car carDetails = modelMapper.map(carDetailsDto, Car.class);
+		Car updatedCar = carService.updateCar(id, carDetails);
 		return ResponseEntity.ok(updatedCar);
 	}
 		

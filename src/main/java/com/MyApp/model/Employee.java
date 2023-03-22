@@ -16,7 +16,6 @@ import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.ManyToAny;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -43,8 +42,8 @@ public class Employee {
 	@Column(name = "password")
 	private String password;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
-	@Column(name = "role")
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@Column(name = "roles")
 	private Collection<Role> roles = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval = true)

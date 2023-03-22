@@ -1,9 +1,6 @@
 package com.MyApp;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,9 +12,13 @@ import com.MyApp.model.Role;
 import com.MyApp.service.CarService;
 import com.MyApp.service.EmployeeService;
 
-
 @SpringBootApplication
 public class MyAppApplication {
+	
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
+	}
 	
 	public static void main(String[] args) {
 		SpringApplication.run(MyAppApplication.class, args);
@@ -39,8 +40,8 @@ public class MyAppApplication {
 			Employee employee = new Employee (0, "jul", "bar", "jul@gmail.com", "password", null, null);
 			employeeService.addEmployee(employee);
 			
-			employeeService.addRoleToEmployee(role.getRoleName(), employee.getEmail());
-			employeeService.addRoleToEmployee(role2.getRoleName(), employee.getEmail());
+			employeeService.addRoleToEmployee(role, employee.getId());
+			employeeService.addRoleToEmployee(role2, employee.getId());
 			
 			Car car = new Car();
 			car.setIntitule("citroen");
@@ -48,8 +49,8 @@ public class MyAppApplication {
 			Car car2 = new Car();
 			car2.setIntitule("BMW");
 			
-			employeeService.addCarToEmployee(car, employee.getId());
-			employeeService.addCarToEmployee(car2, employee.getId());
+			carService.addCarToEmployee(car, employee.getId());
+			carService.addCarToEmployee(car2, employee.getId());
 		};
 		
 	}
