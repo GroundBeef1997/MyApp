@@ -34,9 +34,6 @@ public class MyAppApplication {
 			Role role2 = new Role();
 			role2.setRoleName("EMPLOYEE");
 			
-			employeeService.addRole(role);
-			employeeService.addRole(role2);
-			
 			Employee employee = new Employee (0, "jul", "bar", "jul@gmail.com", "password", null, null);
 			employeeService.addEmployee(employee);
 			

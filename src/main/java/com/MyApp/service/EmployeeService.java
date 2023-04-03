@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,9 +28,6 @@ public class EmployeeService implements UserDetailsService {
 	@Autowired
 	private EmployeeRepository employeeRepository;
 
-	@Autowired
-	private RoleRepository roleRepository;
-
 	static final String MESSAGE_CAR = "La voiture que vous recherchez n'existe pas";
 	static final String MESSAGE_EMPLOYEE = "l'employé que vous recherchez n'existe pas";
 
@@ -37,18 +35,22 @@ public class EmployeeService implements UserDetailsService {
 	 * ------------------ gestion des roles d'un employee
 	 * ------------------------------------
 	 **/
-	public Role addRole(Role role) {
-		return roleRepository.save(role);
-	}
 
 	public Employee addRoleToEmployee(Role role, Long id) {
 		Employee employee = employeeRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(MESSAGE_EMPLOYEE));
-	
-		System.err.println(employee.getRoles());
+
+		if (!role.getRoleName().equals("ADMIN") && !role.getRoleName().equals("EMPLOYEE")) {
+			throw new ResourceNotFoundException("Role is invalid ! " + role.getRoleName());
+		}
+
+		for (Role r : employee.getRoles()) {
+			if (role.getRoleName().equals(r.getRoleName())) {
+				throw new ResourceNotFoundException("Role is existant ! " + role.getRoleName());
+			}
+		}
+
 		employee.getRoles().add(role);
-		
-		System.err.println(employee.getRoles().toString());
 		return employeeRepository.save(employee);
 	}
 
@@ -62,8 +64,6 @@ public class EmployeeService implements UserDetailsService {
 
 	// Permet d'ajouter un employé
 	public Employee addEmployee(Employee employee) {
-
-		System.err.println(employee.getEmail() + " a : " + employee.getPassword());
 		return employeeRepository.save(employee);
 	}
 
@@ -81,8 +81,6 @@ public class EmployeeService implements UserDetailsService {
 		employee.setLastName(employeeDetails.getLastName());
 		employee.setEmail(employeeDetails.getEmail());
 		employee.setPassword(employeeDetails.getPassword());
-
-		System.err.println(employeeDetails.getEmail() + " pwd : " + employeeDetails.getPassword());
 		return employeeRepository.save(employee);
 	}
 
@@ -112,8 +110,10 @@ public class EmployeeService implements UserDetailsService {
 			throw new UsernameNotFoundException(mail);
 		}
 
-		return User.withUsername(employee.getEmail()).password((encoder.encode(employee.getPassword())))
+		return User.withUsername(employee.getEmail()).password((new BCryptPasswordEncoder().encode(employee.getPassword()))) 
 				.authorities("ADMIN", "EMPLOYEE").build();
+		//return User.withUsername(employee.getEmail()).password((encoder.encode(employee.getPassword())))
+			//.authorities("ADMIN", "EMPLOYEE").build();
 	}
 
 }

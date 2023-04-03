@@ -4,6 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Configuration
 @ConfigurationProperties("spring.datasource")
@@ -12,6 +14,8 @@ public class DbConfigure {
 	private String url;
 	private String username;
 	private String password;
+	
+	Logger logger = Logger.getLogger(DbConfigure.class.getName());
 
 	public String getDriverClassName() {
 		return driverClassName;
@@ -48,27 +52,27 @@ public class DbConfigure {
 	@Profile("dev")
 	@Bean
 	public String devDatabaseConnection() {
-		System.out.println("DB connection for DEV mode - hsql Db");
-		System.out.println(driverClassName);
-		System.out.println(url);
+		logger.log(Level.INFO, "DB connection for DEV mode - HSQL db");
+		logger.log(Level.INFO, driverClassName);
+		logger.log(Level.INFO, url);
 		return "DB connection for DEV - H2";
 	}
 
 	@Profile("test")
 	@Bean
 	public String testDatabaseConnection() {
-		System.out.println("DB Connection to TEST mode - H2 Db");
-		System.out.println(driverClassName);
-		System.out.println(url);
+		logger.log(Level.INFO, "DB connection for TEST mode - H2 db");
+		logger.log(Level.INFO, driverClassName);
+		logger.log(Level.INFO, url);
 		return "DB Connection to TEST";
 	}
 
 	@Profile("prod")
 	@Bean
 	public String prodDatabaseConnection() {
-		System.out.println("DB Connection to PROD mode - Mysql Db");
-		System.out.println(driverClassName);
-		System.out.println(url);
+		logger.log(Level.INFO, "DB connection for PROD mode - Mysql Db");
+		logger.log(Level.INFO, driverClassName);
+		logger.log(Level.INFO, url);
 		return "DB Connection to PROD";
 	} 
 }

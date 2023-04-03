@@ -77,4 +77,9 @@ public class EmployeeController {
 		Map<String, Boolean> response = employeeService.deleteEmployee(id);
 		return ResponseEntity.ok(response);
 	}
+	
+	@GetMapping("/hello")
+	public String getTest() {
+		return "hello";
+	}
 }
