@@ -24,7 +24,7 @@ public class Car {
 	private String intitule;
 	
 	@JsonBackReference
-	@ManyToOne(optional=false)
+	@ManyToOne()
 	@JoinColumn(name = "employee_id", referencedColumnName = "id")
 	private Employee employee;
 	

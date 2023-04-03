@@ -28,7 +28,7 @@ public class MyAppApplication {
 	CommandLineRunner start (EmployeeService employeeService, CarService carService) {
 		
 		return args -> {
-			Role role = new Role();
+		/*	Role role = new Role();
 			role.setRoleName("ADMIN");
 			
 			Role role2 = new Role();
@@ -48,6 +48,19 @@ public class MyAppApplication {
 			
 			carService.addCarToEmployee(car, employee.getId());
 			carService.addCarToEmployee(car2, employee.getId());
+			
+			
+			 ----------- 2nd 
+			
+			Employee employee2 = new Employee (1, "jul2", "bar2", "jul@gmail2.com", "password2", null, null);
+			employeeService.addEmployee(employee2);
+			
+			employeeService.addRoleToEmployee(role2, employee2.getId());
+			
+			Car car3 = new Car();
+			car3.setIntitule("BENZ");
+			
+			carService.addCarToEmployee(car3, employee2.getId()); */
 		};
 		
 	}

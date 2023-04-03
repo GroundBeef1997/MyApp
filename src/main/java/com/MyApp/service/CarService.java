@@ -30,12 +30,13 @@ public class CarService {
 	}
 
 	// Permet d'ajouter une voiture.
-	public Car addCarToEmployee(Car car, Long id) {
+	public Employee addCarToEmployee(Car car, Long id) {
 		Employee employee = employeeRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(MESSAGE_EMPLOYEE));
-
+		employee.getCars().add(car);
 		car.setEmployee(employee);
-		return carRepository.save(car);
+		carRepository.save(car);
+		return employeeRepository.save(employee);
 	}
 
 	// Permet de retrouver une voiture selon son identifiant.
@@ -52,31 +53,39 @@ public class CarService {
 	}
 
 	// Permet de mettre à jour une voiture d'un employee.
-	public Car updateCarFromEmployee(Long idCar, Long id, Car carDetails) {
-
-		Employee employee = employeeRepository.findById(id)
+	public Car updateCarFromEmployee(Long idCar, Car carDetails) {		
+		Car car = carRepository.findById(idCar).orElseThrow(() -> new ResourceNotFoundException(MESSAGE_CAR));
+		Employee employee = employeeRepository.findById(car.getEmployee().getId())
 				.orElseThrow(() -> new ResourceNotFoundException(MESSAGE_EMPLOYEE));
 
-		Car car = carRepository.findById(idCar).orElseThrow(() -> new ResourceNotFoundException(MESSAGE_CAR));
-
-		List<Car> cars = new ArrayList<>();
 		car.setIntitule(carDetails.getIntitule());
-		Car updatedCar = carRepository.save(car);
-
-		employee.setCars(cars);
+		carRepository.save(car);
+		
+		List<Car> cars = employee.getCars();
+		for (Car c : cars) {
+			if (c.getId() == car.getId()) {
+				cars.remove(c);
+				cars.add(car);
+			}
+		}
+		employee.setCars(cars);			
 		employeeRepository.save(employee);
-
-		return updatedCar;
-
+		return carRepository.save(car);
 	}
 
 	// Permet de supprimer une voiture et renvoyer un message de confirmation.
-	public Map<String, Boolean> deleteCar(Long id) {
-		Car car = carRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(MESSAGE_CAR));
-
+	public Map<String, Boolean> deleteCarFromEmployee(Long idCar) {
+		Car car = carRepository.findById(idCar).orElseThrow(() -> new ResourceNotFoundException(MESSAGE_CAR));
+		
+		Employee employee = employeeRepository.findById(car.getEmployee().getId())
+				.orElseThrow(() -> new ResourceNotFoundException(MESSAGE_EMPLOYEE));
+		
+		employee.getCars().remove(car);
+		employeeRepository.save(employee);
 		carRepository.delete(car);
+		
 		Map<String, Boolean> response = new HashMap<>();
-		response.put("Voiture n°" + id + " à été supprimé", Boolean.TRUE);
+		response.put("Voiture n°" + idCar + " à été supprimé", Boolean.TRUE);
 		return response;
 	}
 }

@@ -38,10 +38,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().httpBasic();
-		// .sessionCreationPolicy(SessionCreationPolicy.STATELESS); //
+		//http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().httpBasic();
 		//http.authorizeRequests().antMatchers("/api/V1/employees").permitAll().anyRequest().permitAll();
-		http.cors().and().csrf().disable();
+		//http.cors().and().csrf().disable();
+		
+		
+		http.authorizeRequests()
+        .antMatchers("/api/V1/employees").hasAuthority("ADMIN")
+        .antMatchers(HttpMethod.GET, "/api/V1/employee/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
+        .antMatchers(HttpMethod.PUT, "/api/V1/employee/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
+        .antMatchers(HttpMethod.POST, "/api/V1/employee/**").hasAuthority("ADMIN")
+        .antMatchers(HttpMethod.DELETE, "/api/V1/employee/**").hasAuthority("ADMIN")
+        .anyRequest().authenticated()
+        .and()
+        .formLogin().permitAll()
+        .and()
+        .logout().permitAll()
+        .and().httpBasic().and()
+        .exceptionHandling().accessDeniedPage("/403");
 	}
 
 	@Bean

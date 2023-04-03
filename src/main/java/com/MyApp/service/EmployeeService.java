@@ -112,8 +112,6 @@ public class EmployeeService implements UserDetailsService {
 
 		return User.withUsername(employee.getEmail()).password((new BCryptPasswordEncoder().encode(employee.getPassword()))) 
 				.authorities("ADMIN", "EMPLOYEE").build();
-		//return User.withUsername(employee.getEmail()).password((encoder.encode(employee.getPassword())))
-			//.authorities("ADMIN", "EMPLOYEE").build();
 	}
 
 }

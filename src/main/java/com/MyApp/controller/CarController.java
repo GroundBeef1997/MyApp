@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.MyApp.dto.CarDto;
 import com.MyApp.model.Car;
+import com.MyApp.model.Employee;
 import com.MyApp.service.CarService;
 import org.modelmapper.ModelMapper;
 
@@ -54,7 +55,7 @@ public class CarController {
 		
 	//Permet d'ajouter une voiture à un employee.
 	@PostMapping("employee/{id}/car")
-	public Car addCar(@PathVariable(value = "id") Long id, @RequestBody CarDto carDto) {
+	public Employee addCar(@PathVariable(value = "id") Long id, @RequestBody CarDto carDto) {
 		Car car = modelMapper.map(carDto, Car.class);
 		return carService.addCarToEmployee(car,id);
 	}
@@ -70,7 +71,7 @@ public class CarController {
 	//Permet de supprimer une voiture.
 	@DeleteMapping("car/{id}")
 	public ResponseEntity<Map<String, Boolean>> deleteCar(@PathVariable Long id) {	
-		Map<String, Boolean> response = carService.deleteCar(id);
+		Map<String, Boolean> response = carService.deleteCarFromEmployee(id);
 		return ResponseEntity.ok(response);
 	}
 }
