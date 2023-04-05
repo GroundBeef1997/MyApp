@@ -28,13 +28,13 @@ public class MyAppApplication {
 	CommandLineRunner start (EmployeeService employeeService, CarService carService) {
 		
 		return args -> {
-		/*	Role role = new Role();
+			Role role = new Role();
 			role.setRoleName("ADMIN");
 			
 			Role role2 = new Role();
 			role2.setRoleName("EMPLOYEE");
 			
-			Employee employee = new Employee (0, "jul", "bar", "jul@gmail.com", "password", null, null);
+			Employee employee = new Employee ("jul", "bar", "jul@gmail.com", "password");
 			employeeService.addEmployee(employee);
 			
 			employeeService.addRoleToEmployee(role, employee.getId());
@@ -49,10 +49,10 @@ public class MyAppApplication {
 			carService.addCarToEmployee(car, employee.getId());
 			carService.addCarToEmployee(car2, employee.getId());
 			
+				
+			 //----------- 2nd 
 			
-			 ----------- 2nd 
-			
-			Employee employee2 = new Employee (1, "jul2", "bar2", "jul@gmail2.com", "password2", null, null);
+			Employee employee2 = new Employee ("jul2", "bar2", "jul@gmail3.com", "password2");
 			employeeService.addEmployee(employee2);
 			
 			employeeService.addRoleToEmployee(role2, employee2.getId());
@@ -60,7 +60,7 @@ public class MyAppApplication {
 			Car car3 = new Car();
 			car3.setIntitule("BENZ");
 			
-			carService.addCarToEmployee(car3, employee2.getId()); */
+			carService.addCarToEmployee(car3, employee2.getId()); 
 		};
 		
 	}

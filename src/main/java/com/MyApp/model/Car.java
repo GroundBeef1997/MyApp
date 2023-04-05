@@ -10,7 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
 @Table(name="Car")
 public class Car {
@@ -27,6 +29,11 @@ public class Car {
 	@ManyToOne()
 	@JoinColumn(name = "employee_id", referencedColumnName = "id")
 	private Employee employee;
+	
+	public Car (String intitule, Long id) {
+		this.intitule=intitule;
+		this.id=id;
+	}
 	
 	@PreRemove
 	public void beforeRemove() {

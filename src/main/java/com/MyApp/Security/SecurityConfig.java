@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Resource
@@ -40,15 +42,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		//http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().httpBasic();
 		//http.authorizeRequests().antMatchers("/api/V1/employees").permitAll().anyRequest().permitAll();
-		//http.cors().and().csrf().disable();
+		http.cors().and().csrf().disable();
 		
 		
 		http.authorizeRequests()
-        .antMatchers("/api/V1/employees").hasAuthority("ADMIN")
-        .antMatchers(HttpMethod.GET, "/api/V1/employee/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
-        .antMatchers(HttpMethod.PUT, "/api/V1/employee/**").hasAnyAuthority("ADMIN", "EMPLOYEE")
-        .antMatchers(HttpMethod.POST, "/api/V1/employee/**").hasAuthority("ADMIN")
-        .antMatchers(HttpMethod.DELETE, "/api/V1/employee/**").hasAuthority("ADMIN")
+        .antMatchers("/api/V1/employees").hasAnyAuthority("ROLE_ADMIN", "EMPLOYEE")
         .anyRequest().authenticated()
         .and()
         .formLogin().permitAll()

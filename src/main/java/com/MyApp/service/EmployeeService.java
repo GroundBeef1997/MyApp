@@ -1,5 +1,6 @@
 package com.MyApp.service;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,6 @@ import com.MyApp.exception.ResourceNotFoundException;
 import com.MyApp.model.Employee;
 import com.MyApp.model.Role;
 import com.MyApp.repository.EmployeeRepository;
-import com.MyApp.repository.RoleRepository;
 
 @Service
 @Transactional
@@ -109,9 +109,14 @@ public class EmployeeService implements UserDetailsService {
 		if (employee == null) {
 			throw new UsernameNotFoundException(mail);
 		}
-
+		String [] roles = new String[employee.getRoles().size()];
+		int i=0;
+		for (Role r : employee.getRoles()) {
+			roles[i] = r.getRoleName();
+			i++;
+		}
 		return User.withUsername(employee.getEmail()).password((new BCryptPasswordEncoder().encode(employee.getPassword()))) 
-				.authorities("ADMIN", "EMPLOYEE").build();
+				.roles(roles).build();
 	}
 
 }

@@ -29,8 +29,7 @@ class TestCar {
 
 	@Test
 	void addCar() {
-
-		Employee employee2 = new Employee(1, "jul2", "bar2", "jul@gmail2.com", "password2", null, null);
+		Employee employee2 = new Employee("jul2", "bar2", "jul@gmail2.com", "password2");
 		employeeService.addEmployee(employee2);
 
 		Role role2 = new Role();
@@ -48,8 +47,7 @@ class TestCar {
 
 	@Test
 	void deleteCar() {
-
-		Employee employee4 = new Employee(2, "jul2", "bar2", "jul@gmail2.com", "password2", null, null);
+		Employee employee4 = new Employee("jul2", "bar2", "jul@gmail2.com", "password2");
 		employeeService.addEmployee(employee4);
 
 		Car car3 = new Car();
@@ -61,13 +59,11 @@ class TestCar {
 		Map<String, Boolean> response2 = new HashMap<>();
 		response2.put("Voiture n°" +car3.getId()+" à été supprimé", true);
 		assertEquals(response, response2);
-		//assertEquals(null, e.getCars().get(0).getIntitule());
 	}
 	
 	@Test
 	void modifieCar() {
-
-		Employee employee3 = new Employee(3, "jul2", "bar2", "jul@gmail2.com", "password2", null, null);
+		Employee employee3 = new Employee("jul2", "bar2", "jul@gmail2.com", "password2");
 		employeeService.addEmployee(employee3);
 
 		Car car3 = new Car();
@@ -81,7 +77,4 @@ class TestCar {
 		Employee e = car.getEmployee();
 		assertEquals(car.getIntitule(), e.getCars().get(0).getIntitule());
 	}
-	
-	
-
 }
