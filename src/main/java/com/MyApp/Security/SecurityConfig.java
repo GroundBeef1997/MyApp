@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -40,20 +41,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		//http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().httpBasic();
-		//http.authorizeRequests().antMatchers("/api/V1/employees").permitAll().anyRequest().permitAll();
-		http.cors().and().csrf().disable();
-		
-		
+		 http
+         .csrf()
+         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 		http.authorizeRequests()
-        .antMatchers("/api/V1/employees").hasAnyAuthority("ROLE_ADMIN", "EMPLOYEE")
+        .antMatchers("/api/V1/employees").hasAuthority("ROLE_ADMIN")
+        .antMatchers(HttpMethod.GET, "/api/V1/employee/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_EMPLOYEE")
+        .antMatchers(HttpMethod.PUT, "/api/V1/employee/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_EMPLOYEE")
+        .antMatchers(HttpMethod.POST, "/api/V1/employee/**").hasAuthority("ROLE_ADMIN")
+        .antMatchers(HttpMethod.DELETE, "/api/V1/employee/**").hasAuthority("ROLE_ADMIN") 
         .anyRequest().authenticated()
         .and()
         .formLogin().permitAll()
         .and()
         .logout().permitAll()
         .and().httpBasic().and()
-        .exceptionHandling().accessDeniedPage("/403");
+        .exceptionHandling().accessDeniedPage("/api/V1/403");
 	}
 
 	@Bean

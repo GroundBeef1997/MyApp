@@ -22,8 +22,6 @@ import com.MyApp.model.Employee;
 import com.MyApp.model.Role;
 import com.MyApp.service.EmployeeService;
 
-//@CrossOrigin(origins = "https://myapp-angular-heroku.herokuapp.com/") 
-
 @RestController
 @CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping("/api/V1")
@@ -76,6 +74,12 @@ public class EmployeeController {
 	public ResponseEntity<Map<String, Boolean>> deleteEmployee(@PathVariable Long id) {
 		Map<String, Boolean> response = employeeService.deleteEmployee(id);
 		return ResponseEntity.ok(response);
+	}
+	
+	// Permet de retrouver tout les employées
+	@GetMapping("/403")
+	public String accesDeniedPage() {
+		return "Acces denied ! unauthorized acces to this ressource.";
 	}
 	
 	@GetMapping("/hello")
